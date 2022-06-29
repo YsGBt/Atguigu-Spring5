@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+  <!-- 集合类型属性注入 -->
+  <bean id="student" class="com.atguigu.spring5.bean.Student">
+    <!-- 数组类型属性注入 -->
+    <property name="courses">
+      <array>
+        <value>java课程</value>
+        <value>数据库课程</value>
+      </array>
+    </property>
+
+    <!-- List类型属性注入 -->
+    <!-- 提取List集合类型属性注入使用 -->
+    <property name="list" ref="nameList"></property>
+
+    <property name="map">
+      <map>
+        <entry key="JAVA" value="java"></entry>
+        <entry key="PYTHON" value="python"></entry>
+      </map>
+    </property>
+
+    <property name="set">
+      <set>
+        <value>MySQL</value>
+        <value>Redis</value>
+      </set>
+    </property>
+
+    <!-- 注入List集合类型，值是对象 -->
+    <property name="courseList">
+      <list>
+        <ref bean="course1"></ref>
+        <ref bean="course2"></ref>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="course1" class="com.atguigu.spring5.bean.Course">
+    <property name="name" value="Spring5框架"></property>
+  </bean>
+
+  <bean id="course2" class="com.atguigu.spring5.bean.Course">
+    <property name="name" value="MyBatis框架"></property>
+  </bean>
+
+  <!-- 提取List集合类型属性注入 -->
+  <util:list id="nameList">
+    <value>张三</value>
+    <value>小三</value>
+  </util:list>
+
+</beans>

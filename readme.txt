@@ -41,5 +41,150 @@
                     </bean>
 
                2) 第二种注入方式: 使用有参数的构造进行注入
+                  - 创建类，定义属性，创建属性对应的有参数的构造方法
+                  - 在Spring配置文件中进行配置
+                    可以用参数名称(name)或者参数位置(index)
+                    <bean id="order" class="com.atguigu.spring5.demo.Order">
+                      <constructor-arg name="orderName" value="电脑"></constructor-arg>
+                      <constructor-arg index="1" value="China"></constructor-arg>
+                    </bean>
+
+               3) 第三种注入方式: p名称空间注入 (写法简化，本质还是constructor方法注入)
+                  - 使用p名称空间注入，可以简化基于xml配置方式
+                  - 第一步 添加p名称空间在配置文件中
+                    xmlns:p="http://www.springframework.org/schema/p"
+                  - 第二部 进行属性注入，在bean标签里面进行操作
+                    <bean id="book2" class="com.atguigu.spring5.demo.Book" p:bookName="易筋经" p:author="达摩"></bean>
+
+               4) xml注入其他类型属性
+                  a. 字面量
+                     - null值
+                       <!-- 设置null值 -->
+                       <property name="author">
+                         <null></null>
+                       </property>
+
+                     - 属性值包含特殊符号
+                       1. 把<>进行转义 &lt; &gt;
+                       2. 把带特殊符号内容写到 CDATA
+                       <property name="author">
+                         <value><![CDATA[<<达摩>>]]></value>
+                       </property>
+
+                  b. 注入属性
+                     - 外部bean
+                       1. 创建两个类service和dao类
+                       2. 在service调用dao里的方法
+                       3. 在Spring配置文件中进行配置
+                       <!-- service和dao对象创建 -->
+                       <bean id="userService" class="com.atguigu.spring5.service.impl.UserServiceImpl">
+                         <!--
+                           注入userDAO对象
+                           name: 类里面的属性名称
+                           ref: 创建userDAO对象bean标签id值
+                          -->
+                         <property name="userDAO" ref="userDAO"></property>
+                       </bean>
+
+                       <bean id="userDAO" class="com.atguigu.spring5.dao.impl.UserDAOImpl"></bean>
+
+                     - 内部bean
+                       1. 一对多关系: 部门和员工 1:n
+                       2. 在实体类之间表示一对多关系
+                       3. 在Spring文件中进行配置
+                       <bean id="employee" class="com.atguigu.spring5.bean.Employee">
+                         <!-- 设置两个普通属性 -->
+                         <property name="name" value="Lucy"></property>
+                         <property name="gender" value="female"></property>
+                         <!-- 设置对象类型属性 -->
+                         <property name="department">
+                           <bean id="department" class="com.atguigu.spring5.bean.Department">
+                             <property name="name" value="安保部"></property>
+                           </bean>
+                         </property>
+                       </bean>
+
+                     - 级联赋值 (需要在Employee类中生成Department的get方法)
+                       <bean id="employee2" class="com.atguigu.spring5.bean.Employee">
+                         <!-- 设置两个普通属性 -->
+                         <property name="name" value="Lucy"></property>
+                         <property name="gender" value="female"></property>
+                         <!-- 级联赋值 -->
+                         <property name="department.name" value="技术部"></property>
+                       </bean>
+                       <bean id="department2" class="com.atguigu.spring5.bean.Department">
+                         <property name="name" value="财务部"></property>
+                       </bean>
+
+                  c. 注入集合 (在beanStudent.xml)
+                     - 注入数组类型属性
+                     - 注入List集合类型属性
+                     - 注入Map集合类型属性
+                     - 注入Set集合类型属性
+                     - 把集合注入部分提取出来
+                       1. 在Spring配置文件中引入名称空间util
+                       <beans xmlns="http://www.springframework.org/schema/beans"
+                         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                         xmlns:util="http://www.springframework.org/schema/util"
+                         xsi:schemaLocation="
+                               http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                               http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+                       2. 使用util标签完成List集合注入提取
 
        2. 基于注解方式实现
+
+
+
+  5) FactoryBean
+     - Spring有两种类型Bean，一种普通Bean，另外一种工厂Bean (FactoryBean)
+     - 普通Bean: 在配置文件中定义bean类型就是返回类型
+     - 工厂Bean: 在配置文件定义bean类型可以和返回类型不一样
+       1. 创建类，让这个类作为工厂bean，实现接口FactoryBean
+       2. 实现接口里面的方法，在实现的方法中定义返回的bean类型
+          public class MyBean implements FactoryBean<Course> {
+
+            // 定义返回bean
+            // -> Course myBean = context.getBean("myBean", Course.class);
+            @Override
+            public Course getObject() throws Exception {
+              Course course = new Course();
+              course.setName("java");
+              return course;
+            }
+
+            @Override
+            public Class<?> getObjectType() {
+              return null;
+            }
+
+            @Override
+            public boolean isSingleton() {
+              return false;
+            }
+          }
+
+  6) Bean作用域
+     - 在Spring里面，设置创建bean实例是单实例还是多实例
+     - 默认情况下，bean是单实例对象 (多次调用getBean获得的对象是一个)
+     - 设置 单实例 / 多实例 (通过设置 scope):
+       scope属性值:
+          1. 默认值: singleton -> 表示是单实例对象
+          2.        prototype -> 表示是多实例对象
+          3.        request   -> 创建对象放入request中
+          4.        session   -> 创建对象放入session中
+     - singleton和prototype区别
+       1. singleton 单实例，prototype 多实例
+       2. singleton -> 加载spring配置文件时就会创建单实例对象
+       3. prototype -> 不是在加载spring配置文件时创对象，而是在调用getBean方法时才创建多实例对象
+
+
+
+
+
+
+
+
+
+
+
+

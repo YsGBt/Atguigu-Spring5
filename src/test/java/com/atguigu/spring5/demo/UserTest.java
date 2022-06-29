@@ -1,4 +1,4 @@
-package com.atguigu.spring5;
+package com.atguigu.spring5.demo;
 
 import com.atguigu.spring5.demo.User;
 import org.junit.jupiter.api.Test;
