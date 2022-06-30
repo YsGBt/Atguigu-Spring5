@@ -11,7 +11,7 @@
   <properties>
     <maven.compiler.source>8</maven.compiler.source>
     <maven.compiler.target>8</maven.compiler.target>
-    <org.springframework.version>3.0.5.RELEASE</org.springframework.version>
+    <org.springframework.version>5.2.22.RELEASE</org.springframework.version>
   </properties>
 
   <dependencies>
@@ -128,11 +128,11 @@
     <!-- Spring MVC for Portlet Environments (depends on spring-core, spring-beans,
         spring-context, spring-web) Define this if you use Spring MVC with a Portlet
         Container (org.springframework.web.portlet.*) -->
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-webmvc-portlet</artifactId>
-      <version>${org.springframework.version}</version>
-    </dependency>
+<!--    <dependency>-->
+<!--      <groupId>org.springframework</groupId>-->
+<!--      <artifactId>spring-webmvc-portlet</artifactId>-->
+<!--      <version>${org.springframework.version}</version>-->
+<!--    </dependency>-->
 
     <!-- Support for testing Spring applications with tools such as JUnit and
         TestNG This artifact is generally always defined with a 'test' scope for
@@ -149,6 +149,20 @@
       <artifactId>junit-jupiter</artifactId>
       <version>RELEASE</version>
       <scope>compile</scope>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>5.1.45</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/com.alibaba/druid -->
+    <dependency>
+      <groupId>com.alibaba</groupId>
+      <artifactId>druid</artifactId>
+      <version>1.1.10</version>
     </dependency>
 
   </dependencies>

@@ -133,8 +133,6 @@
 
        2. 基于注解方式实现
 
-
-
   5) FactoryBean
      - Spring有两种类型Bean，一种普通Bean，另外一种工厂Bean (FactoryBean)
      - 普通Bean: 在配置文件中定义bean类型就是返回类型
@@ -176,6 +174,58 @@
        1. singleton 单实例，prototype 多实例
        2. singleton -> 加载spring配置文件时就会创建单实例对象
        3. prototype -> 不是在加载spring配置文件时创对象，而是在调用getBean方法时才创建多实例对象
+
+  7) Bean的生命周期 (对象从创建到销毁的过程 在beanLifeCycle.xml & OrderTest.java)
+     - 生命周期
+       1. 通过构造器创建bean实例(无参数构造器)
+       2. 为bean的属性设置值和对其他bean引用(调用set方法)
+       3.0 把bean实例传递bean后置处理器的方法(后置处理器 postProcessBeforeInitialization)
+       3.1 调用bean的初始化的方法(需要进行配置)
+       3.2 把bean实例传递bean后置处理器的方法(后置处理器 postProcessAfterInitialization)
+       4. bean可以使用了(对象获取到了)
+       5. 当容器关闭时，调用bean的销毁方法(需要进行配置销毁的方法)
+
+     - 后置处理器 BeanPostProcessor (在MyBeanPost.java)
+
+  8) Bean自动装配
+     - 根据指定装配规则(属性名称或者属性类型)，Spring自动将匹配的属性值进行注入
+         bean标签属性autowire，配置自动装配
+         autowire属性常用两个值:
+           byName 根据属性名称注入，property name要和bean id一样
+           byType 根据属性值注入，相同类型的bean不能定义多个
+
+  9）引入外部属性文件
+     - 创建外部properties文件
+     - 把外部properties属性文件引入到spring配置文件中
+       *引入context名称空间
+       <context:property-placeholder location="classpath:jdbc.properties"></context:property-placeholder>
+
+  10) Bean管理(注解方式)
+      - 创建对象
+        1. @Component
+        2. @Service
+        3. @Controller
+        4. @Repository
+
+      - 基于注解方式实现对象创建 (在com.atguigu.spring5.annotation)
+        1. 引入依赖 (spring-aop)
+        2. 开启组件扫描
+           - 如果扫描多个包，多个包使用逗号隔开
+           - 或者扫描包的上层目录
+           <context:component-scan base-package="com.atguigu.spring5.annotation"></context:component-scan>
+        3. 创建类，在类上面创建添加对象注解 (在com.atguigu.spring5.annotation.UserService)
+        4. 开启组件扫描的细节配置 (use-default-filters)
+
+      - 基于注解方式实现属性注入 (在com.atguigu.spring5.annotation)
+        1. @AutoWired -> 根据属性类型进行自动装配
+        2. @Qualifier -> 根据属性名称进行注入,需要跟@AutoWired一起使用
+        3. @Resource -> 可以根据类型注入，也可以根据名称注入，在javax包下，不建议使用
+        4. @Value -> 注入普通类型属性
+
+      - 完全注解开发 (在com.atguigu.spring5.annotation.config)
+        1. 创建配置类，替代xml配置文件
+
+
 
 
 

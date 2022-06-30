@@ -1,6 +1,5 @@
 package com.atguigu.spring5.demo;
 
-import com.atguigu.spring5.demo.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
