@@ -225,7 +225,51 @@
       - 完全注解开发 (在com.atguigu.spring5.annotation.config)
         1. 创建配置类，替代xml配置文件
 
+2. AOP
+   1) 什么是AOP (Aspect Oriented Programming)
+      - 面向切面编程: 降低耦合
+      - 通俗描述: 在不通过修改源代码的方式，在猪肝功能里添加新的功能
+   2) AOP底层原理
+      - AOP底层使用动态代理
+        a. 有两种情况的动态代理
+           - 有接口情况，使用JDK动态代理
+             创建接口实现类代理对象，增强类的方法
+             Proxy.newProxyInstance(ClassLoader loader, Class<?> interfaces, InvocationHandler h);
+             第一个参数: 类加载器
+             第二个参数: 增强方法所在的类，这个类实现的接口，支持多个接口
+             第三个参数: 实现这个接口InvocationHandler，创建代理对象，写增强的方法
 
+           - 没有接口情况，使用CGLIB动态代理
+             创建子类的代理对象，增强类的方法
+   3) AOP术语
+      - 连接点: 类里面哪些方法可以被增强，这些方法就被称为连接点
+      - 切入点: 实际被真正增强的方法，被称为切入点
+      - 通知(增强)
+        a. 实际增强的逻辑部分称为通知(增强)
+        b. 通知有多种类型: 前置通知、后置通知、环绕通知、异常通知(catch)、最终通知(finally)
+      - 切面: 把通知应用到切入点的过程
+   4) AOP操作
+      - Spring框架中一般基于AspectJ实现AOP操作
+        a. AspectJ: 不是Spring组成部分，独立AOP框架，一般把AspectJ和Spring框架一起使用，进行AOP操作
+      - 基于AspectJ实现AOP操作
+        a. 基于xml配置文件实现
+        b. 基于注解方式实现
+      - 切入点表达式
+        a. 切入点表达式作用: 知道对哪个类里面的哪个方法进行增强
+        b. 语法结构:
+           execution([权限修饰符][返回类型][类全路径][方法名称]([参数列表]))
+      - 进行通知的配置:
+        a. 在Spring配置文件中，开启注解扫描
+        b. 使用注解创建User和UserProxy对象
+        c. 在增强类上面添加注解@Aspect
+           // 增强类
+           @Component
+           @Aspect // 生成代理对象
+           public class UserProxy {}
+        d. 在Spring配置文件中开启生成代理对象
+           <aop:aspectj-autoproxy></aop:aspectj-autoproxy>
+      - 配置不同类型的通知
+        a. 在增强类里面，在作为通知方法上面添加通知类型注解，使用切入点表达式配置
 
 
 
