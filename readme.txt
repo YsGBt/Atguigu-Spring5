@@ -268,10 +268,24 @@
            public class UserProxy {}
         d. 在Spring配置文件中开启生成代理对象
            <aop:aspectj-autoproxy></aop:aspectj-autoproxy>
-      - 配置不同类型的通知
+      - 配置不同类型的通知 (在UserProxy.java)
         a. 在增强类里面，在作为通知方法上面添加通知类型注解，使用切入点表达式配置
+           @Before(value = "execution(* com.atguigu.spring5.aopannotation.User.add(..))")
+      - 抽取相同的切入点
+        @Pointcut(value = "execution(* com.atguigu.spring5.aopannotation.User.add(..))")
+        public void commonPoint() {
+        }
 
-
+        @Before(value = "commonPoint()")
+        public void ...
+      - 有多个增强类对同一个方法进行增强，设置增强类优先级
+        a. 在增强类上面添加注解 @Order(数字类型值)，数字类型值越小优先级越高
+      - 完全使用注解开发
+        @Configuration
+        @ComponentScan(basePackages = {"com.atguigu"})
+        @EnableAspectJAutoProxy(proxyTargetClass = true)
+        public class ConfigAop {
+        }
 
 
 

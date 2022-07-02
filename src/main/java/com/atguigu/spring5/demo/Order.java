@@ -24,7 +24,7 @@ public class Order {
 
   public void setOrderName(String orderName) {
     this.orderName = orderName;
-    System.out.println("第二部 调用set方法设置属性值");
+    System.out.println("第二步 调用set方法设置属性值");
   }
 
   public String getAddress() {
