@@ -287,8 +287,64 @@
         public class ConfigAop {
         }
 
+3. JdbcTemplate
+  1) 什么是JdbcTemplate
+     - Spring框架对JDBC进行封装，使用JdbcTemplate可以方便的实现对数据库的操作
+  2) 创建数据库连接池
+  3) 配置JdbcTemplate对象，注入DataSource
+     <!-- JdbcTemplate对象 -->
+     <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+       <!-- 注入dataSource -->
+       <property name="dataSource" ref="dataSource"></property>
+     </bean>
+  4) 创建Service类，创建DAO类，在DAO注入JdbcTemplate对象 (在com.atguigu.spring5.jdbctemplate)
+  5) JdbcTemplate实现批量操作
+     - batchUpdate(String sql, List<Object[]> batchArgs);
 
+4. 事务 (在com.atguigu.spring5.jdbctemplate)
+   1) 事务是数据库操作最基本单元，逻辑上一组操作，要么都成功，如果有一个失败所有操作都失败
+   2) 事务四个特性 (ACID)
+      - 原子性 Atomicity
+      - 一致性 Consistency
+      - 隔离性 Isolation
+      - 持久性 Durability
+   3) 事务操作
+      - 事务添加到JavaEE三层结构里面Service层 (业务逻辑层)
+      - 在Spring进行事务管理操作
+        a. 两种方式: 编程式事务管理和声明式事务管理 (一般使用声明式事务管理)
+      - 声明式事务管理
+        a. 基于注解方式 (使用)
+           1. 在Spring配置文件中配置事务管理器
+              <!-- 创建事务管理器 -->
+              <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+                <!-- 注入dataSource -->
+                <property name="dataSource" ref="dataSource"></property>
+              </bean>
+           2. 在Spring配置文件中开启事务注解
+              1) 在Spring配置文件中引入名称空间 tx
+              2) 开启事务的注解
+                 <!-- 开启事务注解 -->
+                 <tx:annotation-driven transaction-manager="transactionManager"></tx:annotation-driven>
+              3) 在service类上面 (获取service类里面方法上面)添加事务注解
+                 - @Transactional，这个注解可以添加到类上面，也可以添加到方法上面
+                 - 如果添加到类上面，这个类里面所有的方法都添加事务
+                 - 如果添加到方法上面，那只为这个方法添加事务
 
+        b. 基于xml配置文件方式
+      - 在Spring进行声明式事务管理，底层使用AOP
+      - Spring事务管理API:
+        a. 提供一个接口，代表事务管理器，这个接口针对不同的框架提供不同的实现类
+           PlatformTransactionManager
+      - 声明式事务管理参数配置
+        a. propagation: 事务传播行为 (当一个事务方法被另一个事务方法调用时，这个事务方法如何进行)
+           - REQUIRED: 如果有事务在运行，当前的方法就在这个事务内运行，否则，就启动一个新的事务，并在自己的事务内运行
+           - REQUIRED_NEW: 当前的方法必须启动新事物，并在它自己的事务内运行，如果有事务正在运行，应该将它挂起
+           - SUPPORTS: 如果有事务在运行，当前的方法就在这个事务内运行，否则它可以不运行在事务中
+        b.
+        c.
+        d.
+        e.
+        f.
 
 
 
