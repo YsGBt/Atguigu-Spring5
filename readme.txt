@@ -331,20 +331,109 @@
                  - 如果添加到方法上面，那只为这个方法添加事务
 
         b. 基于xml配置文件方式
+           1. 在spring配置文件中机进行配置
+              - 配置事务管理器
+              - 配置通知
+              - 配置切入点和切面
+
       - 在Spring进行声明式事务管理，底层使用AOP
       - Spring事务管理API:
         a. 提供一个接口，代表事务管理器，这个接口针对不同的框架提供不同的实现类
            PlatformTransactionManager
-      - 声明式事务管理参数配置
+      - 声明式事务管理参数配置 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED)
         a. propagation: 事务传播行为 (当一个事务方法被另一个事务方法调用时，这个事务方法如何进行)
            - REQUIRED: 如果有事务在运行，当前的方法就在这个事务内运行，否则，就启动一个新的事务，并在自己的事务内运行
            - REQUIRED_NEW: 当前的方法必须启动新事物，并在它自己的事务内运行，如果有事务正在运行，应该将它挂起
            - SUPPORTS: 如果有事务在运行，当前的方法就在这个事务内运行，否则它可以不运行在事务中
-        b.
-        c.
-        d.
-        e.
-        f.
+
+        b. isolation: 事务隔离级别
+           - 事务有特性称为隔离性，多事务操作之间不会产生影响。不考虑隔离性会产生很多的问题。
+           - 有三个读的问题: 脏读、不可重复读、幻读
+             1. 脏读: 一个未提交事务读取到另一个未提交事务的数据
+             2. 不可重复读: 一个未提交事务读取到了另一个已提交事务修改的数据
+             3. 幻读: 一个未提交事务读取到了另一个已提交事务添加的数据
+           - 通过设置事务隔离级别，解决读问题
+             1. Read Uncommitted (读未提交)
+             2. Read Committed (读已提交)
+             3. Repeatable Ream (可重复读)
+             4. Serializable (串行化)
+
+        c. timeout: 超时时间
+           - 事务需要在一定的时间内进行提交，如果不提交则进行回滚
+           - 默认值 -1 (不限时)，设置时间以秒为单位
+
+        d. readOnly: 是否只读
+           - 读: 查询操作， 写: 添加修改删除操作
+           - readOnly 默认值 false， 表示可以查询，也可以添加修改删除
+           - 设置readOnly为true，表示只能查询
+
+        e. rollbackFor: 回滚
+           - 设置查询哪些异常进行事务回滚
+
+        f. noRollbackFor: 不回滚
+           - 设置出现哪些异常不进行事务回滚
+   4) 完全注解开发
+      @Configuration // 作为配置类，替代xml配置文件
+      @ComponentScan(basePackages = {"com.atguigu.spring5.annotation","com.atguigu.spring5.jdbctemplate"})
+      @EnableAspectJAutoProxy(proxyTargetClass = true) // 开启生成代理对象
+      @EnableTransactionManagement // 开启事务
+      public class SpringConfig {
+
+        // 创建数据库连接池
+        @Bean
+        public DruidDataSource getDruidDataSource() {
+          DruidDataSource druidDataSource = new DruidDataSource();
+          druidDataSource.setDriverClassName("com.mysql.jdbc.Driver");
+          druidDataSource.setUrl("jdbc:mysql://localhost:3306/atguigu_spring?rewriteBatchedStatements=true&enabledTLSProtocols=TLSv1.2&useSSL=false");
+          druidDataSource.setUsername("javaConnection");
+          druidDataSource.setPassword("tztlx13GBT");
+          return druidDataSource;
+        }
+
+        // 创建JdbcTemplate对象
+        @Bean
+        public JdbcTemplate getJdbcTemplate(DataSource dataSource) {
+          // 到ioc容器中根据类型找到datasource
+          JdbcTemplate jdbcTemplate = new JdbcTemplate();
+          jdbcTemplate.setDataSource(dataSource);
+          return jdbcTemplate;
+        }
+
+        // 创建事务管理器
+        @Bean
+        public DataSourceTransactionManager getDataSourceTransactionManager(DataSource dataSource) {
+          DataSourceTransactionManager dataSourceTransactionManager = new DataSourceTransactionManager();
+          dataSourceTransactionManager.setDataSource(dataSource);
+          return dataSourceTransactionManager;
+        }
+      }
+
+5. Spring5新功能
+   1) Spring5 框架自带了通用的日志封装
+      - Spring5 已经移除了Log4jConfigListener，官方建议使用Log4j2 (log4j2.xml)
+   2) Spring5 框架核心容器支持 @Nullable 注解
+      - @Nullable 注解可以使用在方法上面，属性上面，参数上面，表示方法返回可以为空，属性值可以为空，参数值可以为空
+      - @NonNull 注解可以标注在方法、字段、参数之上，表示对应的值不能为空；
+      - 用处:
+        - 它清楚地说明了这个方法接受空值，而且如果你重写该方法，你也应该接受空值
+        - @Nullable表明该参数可能为null。一个很好使用例子就是谷歌Guice。在这个轻量级依赖注入框架中，你可以说明这个依赖项可能是空的。如果你试图在没有注解的情况下传递空值，这个框架就不会执行它的工作。
+   3) Spring5 核心容器支持函数风格GenericApplicationContext
+   4) Spring5 支持整合 JUint5
+      - 整合 JUnit4
+        a. 引入Spring相关针对测试的依赖 (spring-test)
+        b. 创建测试类，使用注解方式完成
+           @RunWith(SpringJUnit4ClassRunner.class) // 指定单元测试版本 JUnit4
+           @ContextConfiguration("classpath:transaction.xml") // 加载配置文件
+
+      - 整合 JUnit5
+        a. 引入Spring相关针对测试的依赖 (spring-test), 引入JUnit5依赖
+        b. 创建测试类，使用注解方式完成
+           @ExtendWith(SpringExtension.class)
+           @ContextConfiguration(classes = SpringConfig.class)
+           或使用一个复合注解替代上面两个注解完成整合
+           @SpringJUnitConfig(classes = SpringConfig.class)
+   5) SpringWebFlux
+
 
 
 

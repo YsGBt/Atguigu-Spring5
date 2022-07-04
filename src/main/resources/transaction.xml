@@ -38,4 +38,22 @@
   <!-- 开启事务注解 -->
   <tx:annotation-driven transaction-manager="transactionManager"></tx:annotation-driven>
 
+<!--  &lt;!&ndash; xml方式 &ndash;&gt;-->
+<!--  &lt;!&ndash; 配置通知 &ndash;&gt;-->
+<!--  <tx:advice id="txadvice">-->
+<!--    &lt;!&ndash; 配置事务参数 &ndash;&gt;-->
+<!--    <tx:attributes>-->
+<!--      &lt;!&ndash; 指定那种规则的方法上添加事务 &ndash;&gt;-->
+<!--      <tx:method name="transferMoney" propagation="REQUIRED"/>-->
+<!--    </tx:attributes>-->
+<!--  </tx:advice>-->
+
+<!--  &lt;!&ndash; 配置切入点和切面 &ndash;&gt;-->
+<!--  <aop:config>-->
+<!--    &lt;!&ndash; 配置切入点 &ndash;&gt;-->
+<!--    <aop:pointcut id="pt" expression="execution(* com.atguigu.spring5.jdbctemplate.service.impl.AccountServiceImpl.*(..))"/>-->
+<!--    &lt;!&ndash; 配置切面 &ndash;&gt;-->
+<!--    <aop:advisor advice-ref="txadvice" pointcut-ref="pt"></aop:advisor>-->
+<!--  </aop:config>-->
+
 </beans>
